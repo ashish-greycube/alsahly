@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:government_contract_no",
+ "creation": "2024-12-09 14:20:47.002854",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "government_contract_no",
+  "customer_name",
+  "column_break_jmbm",
+  "contract_start_date",
+  "contract_end_date",
+  "section_break_falu",
+  "items"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer Name",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "contract_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Contract Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "contract_end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Contract End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "government_contract_no",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Government Contract No",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_jmbm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_falu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Contract Items Details AL"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-09 15:13:13.763201",
+ "modified_by": "Administrator",
+ "module": "Alsahly",
+ "name": "Contract AL",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
