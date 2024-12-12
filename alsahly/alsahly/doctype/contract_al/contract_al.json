@@ -13,6 +13,7 @@
   "contract_end_date",
   "section_break_mqpt",
   "main_item_group",
+  "fetch_items",
   "column_break_vytb",
   "sub_item_group",
   "section_break_falu",
@@ -58,7 +59,7 @@
    "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval:doc.sub_item_group",
+   "depends_on": "eval:doc.sub_item_group&&doc.main_item_group",
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
@@ -86,11 +87,17 @@
   {
    "fieldname": "column_break_vytb",
    "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.sub_item_group&&doc.main_item_group",
+   "fieldname": "fetch_items",
+   "fieldtype": "Button",
+   "label": "Fetch Items"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-11 11:09:08.472416",
+ "modified": "2024-12-12 13:44:00.721001",
  "modified_by": "Administrator",
  "module": "Alsahly",
  "name": "Contract AL",

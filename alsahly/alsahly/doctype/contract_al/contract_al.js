@@ -3,6 +3,8 @@
 
 frappe.ui.form.on("Contract AL", {
 	setup(frm) {
+        frm.trigger("hide_grid_add_row");
+        
         frm.set_query("main_item_group", function (doc) {
             console.log("Working")
             return {
@@ -21,32 +23,52 @@ frappe.ui.form.on("Contract AL", {
             }
         });
 
-        frm.set_query("item_code", "items", function (doc) {
-            if (frm.doc.sub_item_group) {
-                return {
-                    filters: {
-                        item_group: frm.doc.sub_item_group,
-                    }
-                };
-            }
-        })
-	}
-});
+        // frm.set_query("item_code", "items", function (doc) {
+        //     if (frm.doc.sub_item_group) {
+        //         return {
+        //             filters: {
+        //                 item_group: frm.doc.sub_item_group,
+        //             }
+        //         };
+        //     }
+        // })
+	},
 
+    hide_grid_add_row: function (frm) {
+        setTimeout(() => {
+            frm.fields_dict.items.grid.wrapper
+                .find(".grid-add-row")
+                .remove();
+        }, 100);
+    },
 
-frappe.ui.form.on("Contract Items Details AL", {
-    item_code: function(frm, cdt, cdn){
-        let row = locals[cdt][cdn]
-        frappe.call({
-            method: "alsahly.alsahly.doctype.contract_al.contract_al.get_item_code_details",
-            args: {
-                item_code: row.item_code,
+    fetch_items: function(frm){
+        if (frm.is_dirty() == true) {
+            frappe.throw({
+                message: __("Please save the form to proceed..."),
+                indicator: "red",
+            });
+        }
+
+        frm.set_value("items", "");
+        frm.call({
+            doc: frm.doc,
+            method: "get_items",
+            freeze: true,
+            callback: (r) => {
+                let item_list = r.message
+                console.log(item_list,"item_list", "====")
+                if (item_list) {
+                    item_list.forEach((e) => {
+                        var d = frm.add_child("items");
+                        frappe.model.set_value(d.doctype, d.name, 'item_code', e.name)
+                        frappe.model.set_value(d.doctype, d.name, 'rate', e.standard_rate)
+                        frappe.model.set_value(d.doctype, d.name, 'uom', e.stock_uom)
+                    });
+                    refresh_field("items");
+                    frm.save()
+                }
             },
-            callback: function (r) {
-                console.log(r.message)
-                frappe.model.set_value(cdt, cdn, 'rate', r.message.standard_rate)
-                frappe.model.set_value(cdt, cdn, 'uom', r.message.stock_uom)
-            }
-        })
+        });
     }
-})
+});

@@ -14,6 +14,12 @@ class ContractAL(Document):
 		if getdate(self.contract_start_date) > getdate(self.contract_end_date):
 			frappe.throw(_("Contract Start Date Cann't be Greatee than Contract End Date."))
 
+	@frappe.whitelist()
+	def get_items(self):
+		item_list = frappe.db.get_all('Item', filters={"item_group": self.sub_item_group},fields=['name','standard_rate', 'stock_uom'])
+		print("item_list=========>", item_list)
+		return item_list
+
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def get_main_item_group(doctype, txt, searchfield, start, page_len, filters):
@@ -23,13 +29,3 @@ def get_main_item_group(doctype, txt, searchfield, start, page_len, filters):
 		# print(unique, '----------ab')
 		return unique
 
-
-@frappe.whitelist()
-def get_item_code_details(item_code):
-	standard_rate, stock_uom = frappe.db.get_value('Item', item_code, ['standard_rate', 'stock_uom'])
-	item_details={
-		"standard_rate" : standard_rate,
-		"stock_uom" : stock_uom
-	}
-
-	return item_details
