@@ -44,9 +44,10 @@
   },
   {
    "fieldname": "government_contract_no",
-   "fieldtype": "Int",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Government Contract No",
+   "length": 15,
    "reqd": 1,
    "unique": 1
   },
@@ -97,7 +98,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-12 13:44:00.721001",
+ "modified": "2024-12-26 07:41:07.407339",
  "modified_by": "Administrator",
  "module": "Alsahly",
  "name": "Contract AL",

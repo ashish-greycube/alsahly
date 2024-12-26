@@ -128,8 +128,11 @@ doctype_js = {
 # }
 doc_events = {
     "Sales Order":{
-    "validate": "alsahly.api.set_internal_wo_reference_in_so"
-}
+        "validate": "alsahly.api.set_internal_wo_reference_in_so"
+    },
+    "Sales Invoice":{
+        "validate": "alsahly.api.set_cc_and_project_from_so"
+    }
 }
 
 # Scheduled Tasks

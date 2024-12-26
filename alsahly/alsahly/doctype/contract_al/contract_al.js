@@ -64,6 +64,7 @@ frappe.ui.form.on("Contract AL", {
                         frappe.model.set_value(d.doctype, d.name, 'item_code', e.name)
                         frappe.model.set_value(d.doctype, d.name, 'rate', e.standard_rate)
                         frappe.model.set_value(d.doctype, d.name, 'uom', e.stock_uom)
+                        frappe.model.set_value(d.doctype, d.name, 'rate', e.price_list_rate)
                     });
                     refresh_field("items");
                     frm.save()

@@ -12,7 +12,7 @@
  "fields": [
   {
    "fieldname": "work_order_type",
-   "fieldtype": "Int",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Work Order Type",
    "reqd": 1,
@@ -26,7 +26,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-09 15:19:58.877437",
+ "modified": "2024-12-26 07:55:01.181436",
  "modified_by": "Administrator",
  "module": "Alsahly",
  "name": "Work Order Type AL",

@@ -32,3 +32,11 @@ def set_internal_wo_reference_in_so(self, method):
 
 		# if self.custom_work_order_no and self.custom_work_order_type:
 		self.custom_internal_wo_reference = (self.custom_work_order_no or '') + cstr(self.custom_work_order_type or '')
+
+def set_cc_and_project_from_so(self, method):
+	if len(self.items)>0:
+		for item in self.items:
+			if item.sales_order:
+				cost_center, project = frappe.db.get_value("Sales Order",item.sales_order,["cost_center","project"])
+				item.cost_center = cost_center
+				item.project = project
