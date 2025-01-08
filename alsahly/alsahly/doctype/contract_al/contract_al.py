@@ -13,7 +13,7 @@ class ContractAL(Document):
 	
 	def validate_contract_dates(self):
 		if getdate(self.contract_start_date) > getdate(self.contract_end_date):
-			frappe.throw(_("Contract Start Date Cann't be Greatee than Contract End Date."))
+			frappe.throw(_("Contract Start Date Can't be Greater than Contract End Date."))
 
 	def validate_government_contract_no(self):
 		print(len(self.government_contract_no))

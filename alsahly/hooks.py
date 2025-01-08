@@ -29,6 +29,7 @@ app_license = "MIT"
 # include js in doctype views
 doctype_js = {
     "Sales Order" : "public/js/sales_order.js",
+    "Project" : "public/js/project.js"
     }
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
@@ -132,6 +133,10 @@ doc_events = {
     },
     "Sales Invoice":{
         "validate": "alsahly.api.set_cc_and_project_from_so"
+    },
+    "Project":{
+        "validate": ["alsahly.api.validate_contract_dates",
+                     "alsahly.api.validate_government_contract_no"]
     }
 }
 

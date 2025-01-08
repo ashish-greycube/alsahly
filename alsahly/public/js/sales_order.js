@@ -13,7 +13,15 @@ frappe.ui.form.on("Sales Order", {
         console.log("Helloooo")
         frm.set_query("item_code", "items", function (doc, cdt, cdn) {
             // let row = locals[cdt][cdn];
-            if (doc.custom_contract_no) {
+            if (doc.project) {
+                return {
+                    query: "alsahly.api.get_project_items_list",
+                    filters: {
+                        project: frm.doc.project
+                    },
+                };
+            }
+            else if (doc.custom_contract_no) {
                 return {
                     query: "alsahly.api.get_contract_items_list",
                     filters: {
@@ -41,6 +49,7 @@ frappe.ui.form.on("Sales Order Item", {
                 method: "alsahly.api.get_item_rate_from_contarct_type",
                 args: {
                     custom_contract_no: frm.doc.custom_contract_no,
+                    project: frm.doc.project,
                     item_code: row.item_code,
                 },
                 callback: function (r) {
