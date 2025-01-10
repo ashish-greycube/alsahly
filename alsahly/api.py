@@ -18,12 +18,18 @@ def get_contract_items_list(doctype, txt, searchfield, start, page_len, filters)
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def get_project_items_list(doctype, txt, searchfield, start, page_len, filters):
-	project = filters.get("project")
-	print("==================project=============", project)
+	selling_price_list = filters.get("selling_price_list")
+	print("==================selling_price_list=============", selling_price_list)
+	# return frappe.get_all(
+	# 	"Contract Items Details AL",
+	# 	parent_doctype="Project",
+	# 	filters={"parent": project,"item_code":("like", f"{txt}%")},
+	# 	fields=["distinct item_code, item_name"],
+	# 	as_list=1,
+	# )
 	return frappe.get_all(
-		"Contract Items Details AL",
-		parent_doctype="Project",
-		filters={"parent": project,"item_code":("like", f"{txt}%")},
+		"Item Price",
+		filters={"price_list": selling_price_list, "selling":1 ,"item_code":("like", f"{txt}%")},
 		fields=["distinct item_code, item_name"],
 		as_list=1,
 	)
@@ -40,14 +46,14 @@ def get_item_rate_from_contarct_type(custom_contract_no=None, item_code=None, pr
 	return item_rate or 0
 
 def set_internal_wo_reference_in_so(self, method):
-		if self.custom_work_order_no:
-			print(len(self.custom_work_order_no), "==========length")
-			work_order_no = cint(self.custom_work_order_no)
-			if work_order_no == 0:
-				frappe.throw(_("Only Digits are allowed in Work Order No."))
-			if len(self.custom_work_order_no) <= 15:
-				frappe.throw(_("Work Order No Digits need to be more than 15 Digits"))
-			print(work_order_no, "========work_order_no")
+		# if self.custom_work_order_no:
+		# 	print(len(self.custom_work_order_no), "==========length")
+		# 	work_order_no = cint(self.custom_work_order_no)
+		# 	if work_order_no == 0:
+		# 		frappe.throw(_("Only Digits are allowed in Work Order No."))
+		# 	if len(self.custom_work_order_no) <= 15:
+		# 		frappe.throw(_("Work Order No Digits need to be more than 15 Digits"))
+		# 	print(work_order_no, "========work_order_no")
 
 		# if self.custom_work_order_no and self.custom_work_order_type:
 		self.custom_internal_wo_reference = (self.custom_work_order_no or '') + cstr(self.custom_work_order_type or '')
@@ -61,8 +67,8 @@ def set_cc_and_project_from_so(self, method):
 				item.project = project
 
 def validate_contract_dates(self, method):
-	if getdate(self.custom_contract_start_date) > getdate(self.custom_contract_end_date):
-		frappe.throw(_("Contract Start Date Can't be Greater than Contract End Date."))
+	if getdate(self.expected_start_date) > getdate(self.expected_end_date):
+		frappe.throw(_("Expected Start Date Can't be Greater than Expected End Date."))
 
 def validate_government_contract_no(self, method):
 	print(len(self.custom_government_contract_no))

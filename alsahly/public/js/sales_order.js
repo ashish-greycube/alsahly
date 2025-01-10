@@ -9,26 +9,35 @@ frappe.ui.form.on("Sales Order", {
         })
     },
 
+    project(frm){
+        let project = frm.doc.project
+        frappe.db.get_value('Project', project , 'custom_price_list')
+            .then(r => {
+            console.log(r.message.custom_price_list)
+            frm.set_value('selling_price_list', r.message.custom_price_list)
+        })
+    },
+
     onload_post_render: function(frm) {
         console.log("Helloooo")
         frm.set_query("item_code", "items", function (doc, cdt, cdn) {
             // let row = locals[cdt][cdn];
-            if (doc.project) {
+            if (doc.selling_price_list) {
                 return {
                     query: "alsahly.api.get_project_items_list",
                     filters: {
-                        project: frm.doc.project
+                        selling_price_list: frm.doc.selling_price_list
                     },
                 };
             }
-            else if (doc.custom_contract_no) {
-                return {
-                    query: "alsahly.api.get_contract_items_list",
-                    filters: {
-                        contract_no: frm.doc.custom_contract_no
-                    },
-                };
-            }
+            // else if (doc.custom_contract_no) {
+            //     return {
+            //         query: "alsahly.api.get_contract_items_list",
+            //         filters: {
+            //             contract_no: frm.doc.custom_contract_no
+            //         },
+            //     };
+            // }
             else{
                 return {
                     filters: {
@@ -41,23 +50,23 @@ frappe.ui.form.on("Sales Order", {
     },
 })
 
-frappe.ui.form.on("Sales Order Item", {
-    item_code: function (frm, cdt, cdn) {
-        setTimeout(() => {
-            let row = locals[cdt][cdn];
-            frappe.call({
-                method: "alsahly.api.get_item_rate_from_contarct_type",
-                args: {
-                    custom_contract_no: frm.doc.custom_contract_no,
-                    project: frm.doc.project,
-                    item_code: row.item_code,
-                },
-                callback: function (r) {
-                    console.log(r.message)
-                    frappe.model.set_value(cdt, cdn, 'rate', r.message)
-                    frappe.show_alert({ message: __("Item Rate Set From Contract Type."), indicator: "green" }, 1);
-                }
-            })
-        }, 550)
-    }
-})
+// frappe.ui.form.on("Sales Order Item", {
+//     item_code: function (frm, cdt, cdn) {
+//         setTimeout(() => {
+//             let row = locals[cdt][cdn];
+//             frappe.call({
+//                 method: "alsahly.api.get_item_rate_from_contarct_type",
+//                 args: {
+//                     custom_contract_no: frm.doc.custom_contract_no,
+//                     project: frm.doc.project,
+//                     item_code: row.item_code,
+//                 },
+//                 callback: function (r) {
+//                     console.log(r.message)
+//                     frappe.model.set_value(cdt, cdn, 'rate', r.message)
+//                     frappe.show_alert({ message: __("Item Rate Set From Contract Type."), indicator: "green" }, 1);
+//                 }
+//             })
+//         }, 550)
+//     }
+// })
