@@ -89,3 +89,12 @@ def get_items(name):
 			if len(item_selling_price)>0:
 				item["price_list_rate"]=item_selling_price[0].price_list_rate
 	return item_list
+
+def set_penalty_amount_in_additional_discount(self, method):
+	total_penalty_amount = 0
+	if len(self.items)>0:
+		for item in self.items:
+			if item.custom_item_penalty:
+				total_penalty_amount = total_penalty_amount + item.custom_item_penalty
+	
+	self.discount_amount = total_penalty_amount
