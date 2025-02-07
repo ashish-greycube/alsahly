@@ -56,7 +56,7 @@ def set_internal_wo_reference_in_so(self, method):
 		# 	print(work_order_no, "========work_order_no")
 
 		# if self.custom_work_order_no and self.custom_work_order_type:
-		self.custom_internal_wo_reference = (self.custom_work_order_no or '') + cstr(self.custom_work_order_type or '')
+		self.custom_internal_wo_reference = cstr(self.custom_work_order_type or '') + (self.custom_work_order_no or '')
 
 def set_cc_and_project_from_so(self, method):
 	if len(self.items)>0:
@@ -98,3 +98,32 @@ def set_penalty_amount_in_additional_discount(self, method):
 				total_penalty_amount = total_penalty_amount + item.custom_item_penalty
 	
 	self.discount_amount = total_penalty_amount
+
+def set_item_qty_based_on_invoice_type(self, method):
+	if self.custom_invoice_type == 'Partial Invoice' and self.is_new():
+		if self.custom_percentage_qty < 1:
+			frappe.throw(_("Percentage Qty Cann't be 0."))
+		else:
+			for item in self.items:
+				item.qty = (item.qty * self.custom_percentage_qty) / 100
+
+def get_items_details_based_on_so_for_print_format(doc):
+	table_details = frappe.db.sql(
+		"""
+			SELECT tsi.custom_work_order_no as work_order_no,
+				tsi.custom_work_order_type as work_order_type,
+				tsi.custom_work_order_description as work_order_description,
+				si.custom_cost_holder as cost_holder,
+				si.due_date ,
+				si.total ,
+				sum((tsi.amount*15)/100) as tax_amt,
+				coalesce(si.base_discount_amount, 0) as base_discount_amount,
+				si.grand_total 
+				From `tabSales Invoice` as si 
+				inner join `tabSales Invoice Item` as tsi on tsi.parent = si.name
+				WHERE si.name = %s
+				GROUP BY tsi.sales_order
+		""",doc.name,as_dict=1,debug=1)
+	# print(table_details, "-----------name")
+
+	return table_details
