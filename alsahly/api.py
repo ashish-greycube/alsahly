@@ -101,11 +101,13 @@ def set_penalty_amount_in_additional_discount(self, method):
 
 def set_item_qty_based_on_invoice_type(self, method):
 	if self.custom_invoice_type == 'Partial Invoice' and self.is_new():
-		if self.custom_percentage_qty < 1:
-			frappe.throw(_("Percentage Qty Cann't be 0."))
+		if self.custom_percentage_qty < 1 or self.custom_percentage_qty > 100:
+			frappe.throw(_("Percentage Qty must be between 0 to 100."))
 		else:
 			for item in self.items:
-				item.qty = (item.qty * self.custom_percentage_qty) / 100
+				if item.so_detail:
+					so_item_qty = frappe.db.get_value("Sales Order Item",item.so_detail, 'qty')
+					item.qty = (so_item_qty * self.custom_percentage_qty) / 100
 
 def get_items_details_based_on_so_for_print_format(doc):
 	table_details = frappe.db.sql(
