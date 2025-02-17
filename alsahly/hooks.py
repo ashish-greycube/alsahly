@@ -138,8 +138,8 @@ doc_events = {
     },
     "Sales Invoice":{
         "validate": ["alsahly.api.set_cc_and_project_from_so",
-                     "alsahly.api.set_penalty_amount_in_additional_discount",
-                     "alsahly.api.set_item_qty_based_on_invoice_type"]
+                     "alsahly.api.set_penalty_amount_in_additional_discount"],
+        "before_validate": "alsahly.api.set_item_qty_based_on_invoice_type"
     },
     "Project":{
         "validate": ["alsahly.api.validate_contract_dates",

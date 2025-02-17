@@ -118,11 +118,15 @@ def get_items_details_based_on_so_for_print_format(doc):
 				si.custom_cost_holder as cost_holder,
 				si.due_date ,
 				si.total ,
+				sum(tsi.amount) as amount,
+				sum(tsi.custom_item_penalty) as penalty,
 				sum((tsi.amount*15)/100) as tax_amt,
 				coalesce(si.base_discount_amount, 0) as base_discount_amount,
-				si.grand_total 
+				si.grand_total,
+				so.total as so_total
 				From `tabSales Invoice` as si 
 				inner join `tabSales Invoice Item` as tsi on tsi.parent = si.name
+				inner join `tabSales Order` as so on so.name = tsi.sales_order
 				WHERE si.name = %s
 				GROUP BY tsi.sales_order
 		""",doc.name,as_dict=1,debug=1)
