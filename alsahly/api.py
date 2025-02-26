@@ -95,8 +95,9 @@ def set_penalty_amount_in_additional_discount(self, method):
 	if len(self.items)>0:
 		for item in self.items:
 			if item.custom_item_penalty:
+				print(item.custom_item_penalty)
 				total_penalty_amount = total_penalty_amount + item.custom_item_penalty
-	
+	print(total_penalty_amount)
 	self.discount_amount = total_penalty_amount
 
 def set_item_qty_based_on_invoice_type(self, method):
@@ -121,6 +122,7 @@ def get_items_details_based_on_so_for_print_format(doc):
 				sum(tsi.amount) as amount,
 				sum(tsi.custom_item_penalty) as penalty,
 				sum((tsi.amount*15)/100) as tax_amt,
+				sum(tsi.discount_amount) as discount_amount,
 				coalesce(si.base_discount_amount, 0) as base_discount_amount,
 				si.grand_total,
 				so.total as so_total
@@ -133,3 +135,37 @@ def get_items_details_based_on_so_for_print_format(doc):
 	# print(table_details, "-----------name")
 
 	return table_details
+
+def validate_penalty_percentage(self, method):
+	if self.custom_penalty_type == "Percentage":
+		if self.custom_item_penalty <= 0:
+			frappe.throw(_("Item Penalty Percentage must be between 0 to 100"))
+	if self.custom_penalty_type == "Amount":
+		if self.custom_item_penalty <= 0:
+			frappe.throw(_("Item Penalty must be greater than 0"))
+
+def set_penalty_amount_in_child_based_on_type(self, method):
+	total_amount = 0
+	if len(self.items)>0:
+		for row in self.items:
+			if self.custom_before_discount == 1:
+				before_discount_amount = row.qty * row.price_list_rate
+				total_amount = total_amount + before_discount_amount
+			else :
+				total_amount = total_amount + row.amount
+	print(total_amount,"total")
+	per_item_penaty = 0
+	for ele in self.items:
+		if self.custom_penalty_type == "Amount":
+			if self.custom_before_discount == 1:
+				per_item_penaty = (self.custom_item_penalty * ele.qty * ele.price_list_rate) / total_amount
+				print(per_item_penaty,"before")
+			else :
+				per_item_penaty = (self.custom_item_penalty * ele.amount ) / total_amount
+				print(per_item_penaty, "after")
+		elif self.custom_penalty_type == "Percentage":
+			if self.custom_before_discount == 1:
+				per_item_penaty = (self.custom_item_penalty * ele.qty * ele.price_list_rate) / 100
+			else :
+				per_item_penaty = (self.custom_item_penalty * ele.amount ) / 100
+		ele.custom_item_penalty = per_item_penaty
