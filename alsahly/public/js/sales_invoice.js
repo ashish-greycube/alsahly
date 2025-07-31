@@ -1,4 +1,7 @@
 frappe.ui.form.on("Sales Invoice", {
+	refresh(frm) {
+		hide_work_order_section_for_multiple_so_ref(frm)
+	},
 
 	// custom_per_item_penalty(frm) {
     //     if ((frm.doc.items).length > 0) {
@@ -23,3 +26,18 @@ frappe.ui.form.on("Sales Invoice Item", {
 	// 	}
 	// },
 });
+
+let hide_work_order_section_for_multiple_so_ref = function (frm) {
+	let unique_so = []
+	frm.doc.items.forEach(e => {
+		if (e.sales_order && !unique_so.includes(e.sales_order)){
+			unique_so.push(e.sales_order)
+		}
+	});
+	if (unique_so.length > 1){
+		frm.set_df_property("custom_section_break_kql4p", "hidden", 1)
+	}
+	else if (unique_so.length == 1){
+		frm.set_df_property("custom_section_break_kql4p", "hidden", 0)
+	}
+}

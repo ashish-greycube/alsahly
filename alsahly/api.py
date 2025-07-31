@@ -65,6 +65,7 @@ def set_cc_and_project_from_so(self, method):
 				cost_center, project = frappe.db.get_value("Sales Order",item.sales_order,["cost_center","project"])
 				item.cost_center = cost_center
 				item.project = project
+				print("==========set_cc_and_project_from_so===============")
 
 def validate_contract_dates(self, method):
 	if getdate(self.expected_start_date) > getdate(self.expected_end_date):
@@ -98,7 +99,12 @@ def set_penalty_amount_in_additional_discount(self, method):
 				print(item.custom_item_penalty)
 				total_penalty_amount = total_penalty_amount + item.custom_item_penalty
 	print(total_penalty_amount)
-	self.discount_amount = total_penalty_amount
+
+	if self.doctype == "Sales Invoice":
+		self.custom_original_penalty = total_penalty_amount
+		self.discount_amount = self.custom_original_penalty + (self.custom_extra_penalty or 0)
+	elif self.doctype == "Sales Order":
+		self.discount_amount = total_penalty_amount
 
 def set_item_qty_based_on_invoice_type(self, method):
 	if self.custom_invoice_type == 'Partial Invoice' and self.is_new():
@@ -169,3 +175,40 @@ def set_penalty_amount_in_child_based_on_type(self, method):
 			else :
 				per_item_penaty = (self.custom_item_penalty * ele.amount ) / 100
 		ele.custom_item_penalty = per_item_penaty
+
+
+def set_workorder_selection_in_si(self, method):
+	if len(self.items) > 0:
+		unique_so_ref = []
+		for item in self.items:
+			if item.sales_order and item.sales_order not in unique_so_ref:
+				unique_so_ref.append(item.sales_order)
+
+		if len(unique_so_ref) > 1:
+			self.custom_cost_holder = ""
+			self.custom_work_order_type = ""
+			self.custom_work_order_type_description = ""
+			self.custom_work_order_no = ""
+			self.custom_internal_wo_reference = ""
+
+		elif len(unique_so_ref) == 1:
+			so = frappe.db.get_value('Sales Order', unique_so_ref[0], ['custom_cost_holder', 'custom_work_order_type', 'custom_work_order_type_description', 'custom_work_order_no', 'custom_internal_wo_reference'], as_dict=1)
+
+			self.custom_cost_holder = so.custom_cost_holder or ''
+			self.custom_work_order_type = so.custom_work_order_type or ''
+			self.custom_work_order_type_description = so.custom_work_order_type_description or ''
+			self.custom_work_order_no = so.custom_work_order_no or ''
+			self.custom_internal_wo_reference = so.custom_internal_wo_reference or ''
+
+		else:
+			pass
+
+def set_discount_account_from_so_price_list_in_si(self, method):
+	if len(self.items) > 0:
+		for item in self.items:
+			if item.sales_order :
+				price_list = frappe.db.get_value("Sales Order", item.sales_order, "selling_price_list")
+				if price_list:
+					discount_acc = frappe.db.get_value("Price List", price_list, "custom_discount_account")
+					item.discount_account = discount_acc or ''
+					# print(item.discount_account, "===================discount_account=============")

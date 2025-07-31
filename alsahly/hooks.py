@@ -29,7 +29,8 @@ app_license = "MIT"
 # include js in doctype views
 doctype_js = {
     "Sales Order" : "public/js/sales_order.js",
-    "Sales Invoice" : "public/js/sales_invoice.js"
+    "Sales Invoice" : "public/js/sales_invoice.js",
+    "Price List": "public/js/price_list.js"
     }
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
@@ -140,7 +141,9 @@ doc_events = {
         "validate": ["alsahly.api.set_cc_and_project_from_so",
                      "alsahly.api.validate_penalty_percentage",
                      "alsahly.api.set_penalty_amount_in_child_based_on_type",
-                     "alsahly.api.set_penalty_amount_in_additional_discount"],
+                     "alsahly.api.set_penalty_amount_in_additional_discount",
+                     "alsahly.api.set_workorder_selection_in_si",
+                     "alsahly.api.set_discount_account_from_so_price_list_in_si"],
         "before_validate": "alsahly.api.set_item_qty_based_on_invoice_type"
     },
     "Project":{
