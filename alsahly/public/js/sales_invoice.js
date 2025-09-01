@@ -25,6 +25,17 @@ frappe.ui.form.on("Sales Invoice Item", {
 	// 		cur_frm.script_manager.copy_from_first_row("items", row, ["custom_item_penalty"]);
 	// 	}
 	// },
+
+
+    custom_item_discount_amount(doc, cdt, cdn){
+        let row = locals[cdt][cdn]
+        // console.log(row.custom_item_discount_amount, "============")
+        if (row.custom_item_discount_amount > 0){
+            // console.log("=========custom_item_discount_amount===========")
+            let item_level_discount_rate= (row.custom_item_discount_amount) / row.qty
+            frappe.model.set_value(cdt, cdn, "discount_amount", item_level_discount_rate)
+        }
+    }
 });
 
 let hide_work_order_section_for_multiple_so_ref = function (frm) {
