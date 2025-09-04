@@ -8,7 +8,7 @@ def get_final_part_invoice_template_data(item_table, doc):
                 'work_order_no' : item.custom_work_order_no,
                 'work_order_type' : item.custom_work_order_type,
                 'work_order_description' : item.custom_work_order_description,
-                'cost_holder' : doc.custom_cost_holder,
+                'cost_holder' : item.custom_cost_holder,
                 'achievment_date' : doc.due_date,
                 'total_order_amnt' : frappe.db.get_value("Sales Order Item", {'parent': item.sales_order, 'item_code': item.item_code}, 'amount') or 0,
                 'total_billed_amnt' :  frappe.db.get_value("Sales Order Item", {'parent': item.sales_order, 'item_code': item.item_code}, 'billed_amt') or 0,

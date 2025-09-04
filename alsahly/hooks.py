@@ -143,7 +143,8 @@ doc_events = {
                      "alsahly.api.set_penalty_amount_in_child_based_on_type",
                      "alsahly.api.set_penalty_amount_in_additional_discount",
                      "alsahly.api.set_workorder_selection_in_si",
-                     "alsahly.api.set_discount_account_from_so_price_list_in_si"],
+                     "alsahly.api.set_discount_account_from_so_price_list_in_si",
+                     "alsahly.api.set_cost_holder_in_si"],
         "before_validate": "alsahly.api.set_item_qty_based_on_invoice_type"
     },
     "Project":{

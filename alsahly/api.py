@@ -174,6 +174,8 @@ def set_penalty_amount_in_child_based_on_type(self, method):
 				per_item_penaty = (self.custom_item_penalty * ele.qty * ele.price_list_rate) / 100
 			else :
 				per_item_penaty = (self.custom_item_penalty * ele.amount ) / 100
+		elif self.custom_penalty_type == "Manual":
+			per_item_penaty = ele.custom_item_penalty
 		ele.custom_item_penalty = per_item_penaty
 
 
@@ -212,3 +214,10 @@ def set_discount_account_from_so_price_list_in_si(self, method):
 					discount_acc = frappe.db.get_value("Price List", price_list, "custom_discount_account")
 					item.discount_account = discount_acc or ''
 					# print(item.discount_account, "===================discount_account=============")
+
+def set_cost_holder_in_si(self, method):
+	if len(self.items) > 0:
+		for item in self.items:
+			if item.sales_order:
+				cost_holder = frappe.db.get_value("Sales Order", item.sales_order, "custom_cost_holder")
+				item.custom_cost_holder = cost_holder
