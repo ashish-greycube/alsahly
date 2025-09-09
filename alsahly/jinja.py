@@ -1,4 +1,5 @@
 import frappe 
+from frappe import _
 
 def get_final_part_invoice_template_data(item_table, doc):
     data = []
@@ -66,3 +67,33 @@ def get_final_part_invoice_template_data(item_table, doc):
                 work_order_no_wise_sorted_data.append(row)
 
         return work_order_no_wise_sorted_data
+
+
+def get_payment_entry_data(sales_invoice, total_invoiced):
+    data = []
+    if sales_invoice != None:
+        pes = frappe.db.get_all(
+            "Payment Entry Reference",
+            filters = {
+                "reference_name" : sales_invoice
+            },
+            fields = ['parent']
+        )
+        print(pes)
+        if len(pes) > 0:
+            total_amount = 0
+            for pe in pes:
+                doc = frappe.get_doc("Payment Entry", pe['parent'])
+                row = {
+                    'rowname' : "{0}-{1}-{2}".format(_(doc.mode_of_payment), doc.name,doc.posting_date,),
+                    'amount' : doc.total_allocated_amount
+                }
+                total_amount = total_amount +  doc.total_allocated_amount
+                data.append(row)
+                print(data)
+            total_row = {
+                'rowname' : _('Outstanding Invoiced Amount'),
+                'amount' : total_invoiced - total_amount
+            }
+            data.append(total_row)
+            return data
