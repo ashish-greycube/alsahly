@@ -91,9 +91,9 @@ def get_payment_entry_data(sales_invoice, total_invoiced):
                 total_amount = total_amount +  doc.total_allocated_amount
                 data.append(row)
                 print(data)
-            total_row = {
-                'rowname' : _('Outstanding Invoiced Amount'),
-                'amount' : total_invoiced - total_amount
-            }
-            data.append(total_row)
+            # total_row = {
+            #     'rowname' : _('Outstanding Invoiced Amount'),
+            #     'amount' : total_invoiced - total_amount
+            # }
+            # data.append(total_row)
             return data
