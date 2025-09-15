@@ -58,6 +58,10 @@ frappe.ui.form.on("Sales Order", {
             }
         });
     },
+
+    custom_cost_holder: function(frm) {
+        set_cost_holder_in_item_table(frm)
+    }
 })
 
 frappe.ui.form.on("Sales Order Item", {
@@ -71,5 +75,22 @@ frappe.ui.form.on("Sales Order Item", {
         else {
 			cur_frm.script_manager.copy_from_first_row("items", row, ["custom_item_penalty"]);
 		}
+
+        if (cur_frm.doc.custom_cost_holder && cur_frm.doc.custom_cost_holder != "Both"){
+            frappe.model.set_value(cdt, cdn, "custom_cost_holder", cur_frm.doc.custom_cost_holder)
+        }
 	},
 });
+
+let set_cost_holder_in_item_table = function(frm){
+    if (frm.doc.custom_cost_holder && frm.doc.items.length > 0 && frm.doc.custom_cost_holder != "Both") {
+        frm.doc.items.forEach(item => {
+            frappe.model.set_value(item.doctype, item.name, "custom_cost_holder", frm.doc.custom_cost_holder)
+        });
+    }
+    else {
+        frm.doc.items.forEach(item => {
+            frappe.model.set_value(item.doctype, item.name, "custom_cost_holder", '')
+        })
+    }
+}
