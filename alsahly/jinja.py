@@ -97,3 +97,13 @@ def get_payment_entry_data(sales_invoice, total_invoiced):
             # }
             # data.append(total_row)
             return data
+        
+def get_returned_si_amount(sales_invoice):
+    returned_si = frappe.db.get_list("Sales Invoice", filters={"is_return":1, "return_against": sales_invoice, "docstatus":1}, fields=["sum(grand_total) as return_amt"])
+
+    return_amt = 0
+    if len(returned_si) > 0:
+        return_amt = returned_si[0].return_amt
+
+    # print(return_amt, "============return_amt====")
+    return return_amt
