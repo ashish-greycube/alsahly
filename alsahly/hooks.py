@@ -67,7 +67,9 @@ jinja = {
     "methods":["alsahly.api.get_items_details_based_on_so_for_print_format", 
                "alsahly.jinja.get_final_part_invoice_template_data", 
                "alsahly.jinja.get_payment_entry_data",
-               "alsahly.jinja.get_returned_si_amount"]
+               "alsahly.jinja.get_returned_si_amount",
+                "alsahly.jinja.get_journal_entry_data"   
+            ]
 }
 
 # Installation

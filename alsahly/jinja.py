@@ -99,11 +99,30 @@ def get_payment_entry_data(sales_invoice, total_invoiced):
             return data
         
 def get_returned_si_amount(sales_invoice):
-    returned_si = frappe.db.get_list("Sales Invoice", filters={"is_return":1, "return_against": sales_invoice, "docstatus":1}, fields=["sum(grand_total) as return_amt"])
+    returned_si = frappe.db.get_list("Sales Invoice", filters={"is_return":1, "return_against": sales_invoice, "docstatus":1}, fields=["name"])
 
-    return_amt = 0
+    return_data = []
     if len(returned_si) > 0:
-        return_amt = returned_si[0].return_amt
-
-    # print(return_amt, "============return_amt====")
-    return return_amt
+        for si in returned_si:
+            doc = frappe.get_doc("Sales Invoice", si['name'])
+            row = {
+                'rowname' : "{0}-{1}-{2}".format(("إشعار دائن"),doc.name, doc.posting_date,),
+                'amount' : doc.grand_total
+            }
+            return_data.append(row)
+        return return_data
+    
+def get_journal_entry_data(sales_invoice):
+    data = []
+    if sales_invoice != None:
+        jes = frappe.db.get_all("Journal Entry Account", filters = {'reference_type' : 'Sales Invoice', 'reference_name':sales_invoice}, fields = ['parent'])
+        print(jes)
+        if len(jes) > 0:
+            for je in jes:
+                doc = frappe.get_doc("Journal Entry", je['parent'])
+                row = {
+                    'rowname' : "{0}-{1}-{2}".format(("قيد يومية"), doc.name, doc.posting_date),
+                    'amount' : doc.total_debit
+                }
+                data.append(row)
+            return data
