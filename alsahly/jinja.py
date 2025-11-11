@@ -86,7 +86,8 @@ def get_payment_entry_data(sales_invoice, total_invoiced):
                 doc = frappe.get_doc("Payment Entry", pe['parent'])
                 row = {
                     'rowname' : "{0}-{1}-{2}".format(_(doc.mode_of_payment), doc.name,doc.posting_date,),
-                    'amount' : doc.total_allocated_amount
+                    'amount' : doc.total_allocated_amount,
+                    'date' : doc.posting_date
                 }
                 total_amount = total_amount +  doc.total_allocated_amount
                 data.append(row)
@@ -100,14 +101,15 @@ def get_payment_entry_data(sales_invoice, total_invoiced):
         
 def get_returned_si_amount(sales_invoice):
     returned_si = frappe.db.get_list("Sales Invoice", filters={"is_return":1, "return_against": sales_invoice, "docstatus":1}, fields=["name"])
-
+    si_doc = frappe.get_doc("Sales Invoice", sales_invoice)
     return_data = []
     if len(returned_si) > 0:
         for si in returned_si:
             doc = frappe.get_doc("Sales Invoice", si['name'])
             row = {
                 'rowname' : "{0}-{1}-{2}".format(("إشعار دائن"),doc.name, doc.posting_date,),
-                'amount' : doc.grand_total
+                'amount' : doc.grand_total + si_doc.grand_total,
+                'date' : doc.posting_date
             }
             return_data.append(row)
         return return_data
@@ -122,7 +124,37 @@ def get_journal_entry_data(sales_invoice):
                 doc = frappe.get_doc("Journal Entry", je['parent'])
                 row = {
                     'rowname' : "{0}-{1}-{2}".format(("قيد يومية"), doc.name, doc.posting_date),
-                    'amount' : doc.total_debit
+                    'amount' : doc.total_debit,
+                    'date' : doc.posting_date
                 }
                 data.append(row)
             return data
+        
+def get_ordered_deduction_data(pe_data, re_data, je_data):
+    ordered_data = []
+    ordered_dates = []
+    
+    for pe in pe_data:
+        if pe.get('date') not in ordered_dates:
+            ordered_dates.append(pe.get('date'))
+    for re in re_data:
+        if re.get('date') not in ordered_dates:
+            ordered_dates.append(re.get('date'))
+    for je in je_data:
+        if je.get('date') not in ordered_dates:
+            ordered_dates.append(je.get('date'))
+   
+    ordered_dates = sorted(ordered_dates)
+   
+    for od in ordered_dates:
+        for pe in pe_data:
+            if pe.get('date') == od:
+                ordered_data.append(pe)
+        for re in re_data:
+            if re.get('date') == od:
+                ordered_data.append(re)
+        for je in je_data:
+            if je.get('date') == od:
+                ordered_data.append(je)
+    
+    return ordered_data

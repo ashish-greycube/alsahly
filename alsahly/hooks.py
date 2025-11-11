@@ -68,7 +68,8 @@ jinja = {
                "alsahly.jinja.get_final_part_invoice_template_data", 
                "alsahly.jinja.get_payment_entry_data",
                "alsahly.jinja.get_returned_si_amount",
-                "alsahly.jinja.get_journal_entry_data"   
+                "alsahly.jinja.get_journal_entry_data",
+                "alsahly.jinja.get_ordered_deduction_data"  
             ]
 }
 
