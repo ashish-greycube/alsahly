@@ -134,27 +134,31 @@ def get_ordered_deduction_data(pe_data, re_data, je_data):
     ordered_data = []
     ordered_dates = []
     
-    for pe in pe_data:
-        if pe.get('date') not in ordered_dates:
-            ordered_dates.append(pe.get('date'))
-    for re in re_data:
-        if re.get('date') not in ordered_dates:
-            ordered_dates.append(re.get('date'))
-    for je in je_data:
-        if je.get('date') not in ordered_dates:
-            ordered_dates.append(je.get('date'))
-   
-    ordered_dates = sorted(ordered_dates)
-   
-    for od in ordered_dates:
+    if pe_data != None:
         for pe in pe_data:
-            if pe.get('date') == od:
-                ordered_data.append(pe)
+            if pe.get('date') not in ordered_dates:
+                ordered_dates.append(pe.get('date'))
+    if re_data != None:
         for re in re_data:
-            if re.get('date') == od:
-                ordered_data.append(re)
+            if re.get('date') not in ordered_dates:
+                ordered_dates.append(re.get('date'))
+    if je_data != None:
         for je in je_data:
-            if je.get('date') == od:
-                ordered_data.append(je)
+            if je.get('date') not in ordered_dates:
+                ordered_dates.append(je.get('date'))
+   
+    if ordered_dates != [] or ordered_dates != None:
+        ordered_dates = sorted(ordered_dates)
+    
+        for od in ordered_dates:
+            for pe in pe_data:
+                if pe.get('date') == od:
+                    ordered_data.append(pe)
+            for re in re_data:
+                if re.get('date') == od:
+                    ordered_data.append(re)
+            for je in je_data:
+                if je.get('date') == od:
+                    ordered_data.append(je)
     
     return ordered_data
